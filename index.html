@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vigenère Cipher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #fff;
+            border-bottom: 1px solid #e1e4e8;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #1a1a2e;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .card-header h2 {
+            color: #1a1a2e;
+            font-size: 1.8rem;
+            margin-left: 10px;
+        }
+
+        .card-description {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
+
+        .btn-primary.active {
+            background-color: #2563eb;
+        }
+
+        .btn-secondary.active {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: #1d4ed8;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f0f9ff;
+            border-left: 4px solid #2563eb;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        .result-text {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            word-break: break-all;
+            color: #1e3a8a;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1> Vigenère Cipher</h1>
+            <p class="subtitle">Tools vigenere cipher</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <span style="font-size: 2rem;"></span>
+                <h2>Encrypt / Decrypt</h2>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary active" id="encryptBtn" onclick="setMode('encrypt')">
+                    Encrypt
+                </button>
+                <button class="btn btn-secondary" id="decryptBtn" onclick="setMode('decrypt')">
+                    Decrypt
+                </button>
+            </div>
+
+            <div class="form-group">
+                <label for="key">Key</label>
+                <input type="text" id="key" placeholder="Silahkan isi terlebih dahulu">
+            </div>
+
+            <div class="form-group">
+                <label for="inputText">Input Text</label>
+                <textarea id="inputText" placeholder="Masukan Text"></textarea>
+            </div>
+
+            <button class="btn-submit" onclick="process()">Encrypt</button>
+
+            <div class="result" id="result">
+                <div class="result-label" id="resultLabel">Encrypted Text:</div>
+                <div class="result-text" id="resultText"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Vigenère Cipher Tool</p>
+    </footer>
+
+    <script>
+        let currentMode = 'encrypt';
+
+        function setMode(mode) {
+            currentMode = mode;
+            const encryptBtn = document.getElementById('encryptBtn');
+            const decryptBtn = document.getElementById('decryptBtn');
+            const submitBtn = document.querySelector('.btn-submit');
+
+            if (mode === 'encrypt') {
+                encryptBtn.classList.add('active');
+                decryptBtn.classList.remove('active');
+                submitBtn.textContent = 'Encrypt';
+            } else {
+                encryptBtn.classList.remove('active');
+                decryptBtn.classList.add('active');
+                submitBtn.textContent = 'Decrypt';
+            }
+        }
+
+        function vigenereCipher(text, key, mode) {
+            let result = '';
+            key = key.toUpperCase();
+            let keyIndex = 0;
+
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+
+                if (/[a-zA-Z]/.test(char)) {
+                    let base = char === char.toUpperCase() ? 65 : 97;
+                    let shift = key.charCodeAt(keyIndex % key.length) - 65;
+
+                    if (mode === 'decrypt') {
+                        shift = -shift;
+                    }
+
+                    let charCode = ((char.charCodeAt(0) - base + shift + 26) % 26) + base;
+                    result += String.fromCharCode(charCode);
+                    keyIndex++;
+                } else {
+                    result += char;
+                }
+            }
+
+            return result;
+        }
+
+        function process() {
+            const key = document.getElementById('key').value;
+            const inputText = document.getElementById('inputText').value;
+            const resultDiv = document.getElementById('result');
+            const resultLabel = document.getElementById('resultLabel');
+            const resultText = document.getElementById('resultText');
+
+            if (!key || !inputText) {
+                alert('Isi dulu lah!');
+                return;
+            }
+
+            const output = vigenereCipher(inputText, key, currentMode);
+            
+            resultLabel.textContent = currentMode === 'encrypt' ? 'Encrypted Text:' : 'Decrypted Text:';
+            resultText.textContent = output;
+            resultDiv.classList.add('show');
+        }
+    </script>
+</body>
+</html>
